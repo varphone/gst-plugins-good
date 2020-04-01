@@ -903,6 +903,33 @@ buffer_list_copy_data (GstBuffer ** buf, guint idx, gpointer data)
   return TRUE;
 }
 
+/**
+ * gst_buffer_list_calculate_size:
+ * @list: a #GstBufferList
+ *
+ * Calculates the size of the data contained in buffer list by adding the
+ * size of all buffers.
+ *
+ * Returns: the size of the data contained in buffer list in bytes.
+ *
+ * Since: 1.14
+ */
+static gsize
+gst_buffer_list_calculate_size (GstBufferList * list)
+{
+  gsize size = 0;
+  guint i, n;
+
+  g_return_val_if_fail (GST_IS_BUFFER_LIST (list), 0);
+
+  n = gst_buffer_list_length (list);
+
+  for (i = 0; i < n; ++i)
+    size += gst_buffer_get_size (gst_buffer_list_get (list, i));
+
+  return size;
+}
+
 /* Our assumption for now is that the buffers in a buffer list should always
  * end up in the same file. If someone wants different behaviour, they'll just
  * have to add a property for that. */
